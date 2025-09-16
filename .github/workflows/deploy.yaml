@@ -22,3 +22,13 @@ jobs:
         run: |
           echo "Version: ${{ inputs.deployVersion }}"
           echo "Target: ${{ inputs.deployTarget }}"
+          exit 1
+          
+      - name: Notify about failed deploy
+        if: failure()
+        shell: pwsh
+        run: |          
+          $repoId = "${{ github.repository }}"
+          $runId = "${{ github.run_id }}"          
+          $message = "[See deployment](https://github.com/$repoId/actions/runs/$runId)"
+          echo "Message: $message"  
