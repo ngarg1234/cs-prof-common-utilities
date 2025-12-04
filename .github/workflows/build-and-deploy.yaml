@@ -18,13 +18,14 @@ jobs:
           echo "PR merged by: $ACTOR"
           echo "Triggering deployment.yaml in 1040US repo..."
 
-          curl -sS -X POST \
+          curl -X POST \
             -H "Authorization: token $TOKEN" \
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/repos/ngarg1234/1040US/actions/workflows/deployment.yaml/dispatches \
             -d "{
-              \"ref\": \"main\",
+              \"ref\": \"testActor\",
               \"inputs\": {
                 \"pr_actor\": \"$ACTOR\"
               }
             }"
+
