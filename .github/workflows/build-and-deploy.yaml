@@ -13,19 +13,29 @@ jobs:
       - name: Trigger deployment.yaml in 1040US repo
         env:
           TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
-          ACTOR: ${{ github.actor }}
         run: |
-          echo "PR merged by: $ACTOR"
-          echo "Triggering deployment.yaml in 1040US repo..."
+          echo "PR merged by: ${{ github.actor }}"
+          echo "Finding workflow ID for deployment.yaml..."
+
+          WORKFLOW_ID=$(curl -s \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/ngarg1234/1040US/actions/workflows \
+            | jq -r '.workflows[] | select(.path==".github/workflows/deployment.yaml") | .id')
+
+          echo "Workflow ID = $WORKFLOW_ID"
+
+          if [ -z "$WORKFLOW_ID" ] || [ "$WORKFLOW_ID" = "null" ]; then
+            echo "ERROR: Workflow not found"
+            exit 1
+          fi
+
+          echo "Triggering deployment workflow..."
 
           curl -X POST \
-            -H "Authorization: token $TOKEN" \
+            -H "Authorization: Bearer $TOKEN" \
             -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/ngarg1234/1040US/actions/workflows/deployment.yaml/dispatches \
+            https://api.github.com/repos/ngarg1234/1040US/actions/workflows/$WORKFLOW_ID/dispatches \
             -d "{
-              \"ref\": \"testActor\",
-              \"inputs\": {
-                \"pr_actor\": \"$ACTOR\"
-              }
+              \"ref\": \"testActor\"
             }"
-
