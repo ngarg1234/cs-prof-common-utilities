@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Trigger deployment.yaml in 1040US repo
         env:
-          TOKEN: TEST
+          TOKEN: ${{ secrets.CROSS_REPO_TOKEN }}
           ACTOR: ${{ github.actor }}
         run: |
           echo "PR merged by: $ACTOR"
