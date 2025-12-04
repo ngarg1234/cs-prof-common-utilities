@@ -10,3 +10,4 @@ Manual: Deploy only	✅	Through Release Pipeline
 
 Push/PR: Build + Deploy	✅	Automatically done (since VALIDATE_ONLY logic only applies to manual trigger)
 
+Om Sai Ram :):)
